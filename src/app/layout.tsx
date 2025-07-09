@@ -1,22 +1,30 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from "next"
+import { Lato } from "next/font/google"
+import "./globals.css"
+import Navbar from '@/components/layout/navbar'
 
-const inter = Inter({ subsets: ["latin"] });
+const lato = Lato({
+  weight: ['100', '300', '400', '700', '900'],
+  subsets: ['latin'],
+  preload: false,
+})
 
 export const metadata: Metadata = {
   title: "Solace Candidate Assignment",
   description: "Show us what you got",
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={lato.className}>
+        <Navbar />
+        {children}
+      </body>
     </html>
-  );
+  )
 }
