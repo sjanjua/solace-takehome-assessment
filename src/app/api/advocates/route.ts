@@ -12,7 +12,12 @@ export async function GET() {
     // data that comes back is of type `never[]`,
     // and to also ensure that the json shape
     // matches what we are expecting. Could use
-    // something like Zod to handle this
+    // something like Zod to handle this. We might
+    // also want to filter out records that don't
+    // conform to the expected reponse schema and
+    // do error reporting to alert us so we can
+    // investigate and fix any missing or malformed
+    // data
 
     return Response.json(data)
   }

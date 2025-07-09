@@ -16,11 +16,11 @@ const AdvocatesTable = (props: AdvocatesTableProps) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>City</TableHead>
-          <TableHead>Specialties</TableHead>
-          <TableHead>Years of Experience</TableHead>
-          <TableHead>Phone Number</TableHead>
+          <TableHead className='text-lg'>Advocate</TableHead>
+          <TableHead className='text-lg'>City</TableHead>
+          <TableHead className='text-lg'>Specialties</TableHead>
+          <TableHead className='text-lg'>Years of Experience</TableHead>
+          <TableHead className='text-lg'>Phone Number</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -33,7 +33,7 @@ const AdvocatesTable = (props: AdvocatesTableProps) => {
                 <ul>
                   {
                     (advocate.specialties as string[]).map((specialty, index) => {
-                      return <li key={index}>{specialty}</li>
+                      return <li key={index}> - {specialty}</li>
                     })
                   }
                 </ul>

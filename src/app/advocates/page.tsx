@@ -1,5 +1,3 @@
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from '@/components/ui/breadcrumb'
-import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from '@/components/ui/table'
 import { AdvocatesSchema } from '@/types'
 import Breadcrumbs from './_components/Breadcrumbs'
 import AdvocatesTable from './_components/AdvocatesTable'
