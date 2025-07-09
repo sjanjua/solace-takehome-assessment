@@ -38,6 +38,6 @@
 - Filtering by specialty doesn't work. Ideally this should be a multi-select dropdown anyways, but there seems to be an issue in the backend when querying
 - Filtering as a whole could probably be improved, but I'm new to Drizzle ORM and scrapped together whatever I could find in the docs
 - Add a "Clear" button to reset filters
-- The table could probably be broken up into multiple tables and joined together as needed
+- The table could probably be broken up into multiple tables and joined together as needed. This would also allow creating indexes on fields that are used heavily for querying and filtering, improving performance.
 - More robust and better error handling on both the client and server
 - Add loading indicators in the UI for when a query is running
