@@ -1,6 +1,7 @@
-import { AdvocatesSchema } from '@/types'
 import Breadcrumbs from './_components/Breadcrumbs'
 import AdvocatesTable from './_components/AdvocatesTable'
+import { z } from 'zod/v4'
+import { AdvocatesSchema } from '@/types'
 
 const AdvocatesPage = async () => {
 
@@ -35,17 +36,18 @@ const AdvocatesPage = async () => {
 // we want to make (e.g client.getAdvocates()), and
 // also does error handling more gracefully
 
-const getAdvocates = async () => {
-
-  console.log("fetching advocates...")
+const getAdvocates = async (
+  limit: number = 10,
+  offset: number = 0,
+) => {
 
   try {
 
     const baseUrl = process.env.BASE_URL
 
-    const response = await fetch(`${baseUrl}/api/advocates`)
+    const response = await fetch(`${baseUrl}/api/advocates?limit=${limit}&offset=${offset}`)
 
-    if (response.status !== 200) {
+    if (!response.ok) {
 
       console.error('Failed to fetch advocates data')
 
@@ -58,10 +60,23 @@ const getAdvocates = async () => {
     // Probably want to do some schema validation
     // here so that we throw an exception if the
     // data that comes back does not match the expected
-    // type of `AdvocatesData`. We could use something like
-    // Zod to handle this
+    // type of `Advocates[]`. We do schema validation on the
+    // server, but it's good to do an additional check here
+    // as an added safety net
 
-    return data as AdvocatesSchema[]
+    const { success, data: validated, error } = await z.safeParseAsync(AdvocatesSchema, data)
+
+    if (!success) {
+
+      const errorString = JSON.stringify(z.prettifyError(error))
+      console.error('Failed to validate response schema')
+      console.error(errorString)
+
+      return null
+
+    }
+
+    return validated
 
   }
   catch (error: unknown) {
