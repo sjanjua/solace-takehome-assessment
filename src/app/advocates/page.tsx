@@ -1,11 +1,12 @@
 import Breadcrumbs from './_components/Breadcrumbs'
 import AdvocatesTable from './_components/AdvocatesTable'
-import { z } from 'zod/v4'
-import { AdvocatesSchema } from '@/types'
+import { HttpClient } from './_util/http-client'
 
 const AdvocatesPage = async () => {
 
-  const advocatesData = await getAdvocates()
+  const client = new HttpClient()
+
+  const advocatesData = await client.getAdvocates()
 
   // If `advocatesData` is null, this means that
   // an error occurred while attempting to fetch
@@ -18,7 +19,7 @@ const AdvocatesPage = async () => {
       <h1 className='text-xl'>Find an Advocate</h1>
 
       {
-        !advocatesData
+        advocatesData === null
           ? <div className='w-full text-center'>
             We encountered a problem while trying to get your data. Please try again later.
           </div>
@@ -27,70 +28,6 @@ const AdvocatesPage = async () => {
 
     </main>
   )
-}
-
-// Might be better to create a dedicated
-// http client to handle api calls. For example,
-// we could create a class called DatabaseClient
-// that has handler methods for each type of call
-// we want to make (e.g client.getAdvocates()), and
-// also does error handling more gracefully
-
-const getAdvocates = async (
-  limit: number = 10,
-  offset: number = 0,
-) => {
-
-  try {
-
-    const baseUrl = process.env.BASE_URL
-
-    const response = await fetch(`${baseUrl}/api/advocates?limit=${limit}&offset=${offset}`)
-
-    if (!response.ok) {
-
-      console.error('Failed to fetch advocates data')
-
-      return null
-
-    }
-
-    const data = await response.json()
-
-    // Probably want to do some schema validation
-    // here so that we throw an exception if the
-    // data that comes back does not match the expected
-    // type of `Advocates[]`. We do schema validation on the
-    // server, but it's good to do an additional check here
-    // as an added safety net
-
-    const { success, data: validated, error } = await z.safeParseAsync(AdvocatesSchema, data)
-
-    if (!success) {
-
-      const errorString = JSON.stringify(z.prettifyError(error))
-      console.error('Failed to validate response schema')
-      console.error(errorString)
-
-      return null
-
-    }
-
-    return validated
-
-  }
-  catch (error: unknown) {
-
-    if (error instanceof Error) {
-
-      console.error('Failed to fetch advocates data', error.message)
-
-    }
-
-    return null
-
-  }
-
 }
 
 export default AdvocatesPage

@@ -3,6 +3,7 @@ import db from "../../../db"
 import { advocatesTable } from "../../../db/schema"
 import { AdvocatesSchema } from "@/types"
 import { NextRequest } from "next/server"
+import { and, eq, gte, ilike, or, sql, SQL } from "drizzle-orm"
 
 export async function GET(request: NextRequest) {
 
@@ -11,6 +12,13 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get('limit') ?? '10')
   const offset = parseInt(searchParams.get('offset') ?? '0')
 
+  const name = searchParams.get('name')
+  const degree = searchParams.get('degree')
+  const city = searchParams.get('city')
+  const specialty = searchParams.get('specialty')
+  const phone = searchParams.get('phone')
+  const yearsOfExperience = searchParams.get('yearsOfExperience')
+
   try {
 
     if (!db) {
@@ -18,11 +26,20 @@ export async function GET(request: NextRequest) {
       return Response.json({}, {status: 500})
     }
 
-    const result = await db
-      .select()
-      .from(advocatesTable)
-      .limit(limit)
-      .offset(offset)
+    const filters: SQL[] = []
+
+    // This feels a bit ugly to do it this way...
+    if (name) filters.push(or(ilike(advocatesTable.firstName, `%${name}%`), ilike(advocatesTable.lastName, `%${name}%`))!)
+    if (degree) filters.push(ilike(advocatesTable.degree, degree))
+    if (city) filters.push(ilike(advocatesTable.city, city))
+    // Filtering by specialty doesn't work, need to debug this further
+    if (specialty) filters.push(sql`${advocatesTable.specialties} @> ${JSON.stringify([specialty])}::jsonb`)
+    if (phone) filters.push(eq(advocatesTable.phoneNumber, phone))
+    if (yearsOfExperience) filters.push(gte(advocatesTable.yearsOfExperience, parseInt(yearsOfExperience)))
+
+    const query = db.select().from(advocatesTable).limit(limit).offset(offset).where(and(...filters))
+
+    const result = await query
 
     // Probably want to do some schema validation
     // here so that we throw an exception if the
