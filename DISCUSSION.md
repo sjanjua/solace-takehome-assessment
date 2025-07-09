@@ -18,15 +18,19 @@
 
 ### Observations
 - The initial implementation of the filter was based on the current returned results. This presents a few issues:
+  - The filter tries to match a string across all the different columns. Yikes. There should probably be different filter inputs that are specific to different columns. There could also be filtering done ahead of time on the server when a query is ran.
   - We would have to return all the data to the client, which is a no-no due to how inefficient that would be if the data set is extremely large
   - The client would have to filter through a large amount of data on every keypress, which is also a no-no for the same reason as above and would degrade page performance
 - There is no pagination being done on the queries, which would cause performance issues on large datasets
 - Some table column types seem to be incorrect or inefficient
+- API calls had little to no error handling. There should be a way to gracefully handle errors and also report on them later on through telemetry or logs
+- There's no validation happening on the API request and response payloads. Something like Zod can help with runtime schema validation
 
 ### Potential Improvements
 - Add more robust pagination to queries to improve performance
+- Separate "querying" vs. "filtering". "Querying" can be done on the server to do some ahead-of-time filtering before it gets to the client. "Filtering" can be done on the client to further refine the results based on what the user wants to see.
 - Add response caching either to the client or server to improve performance for duplicate queries. Next.js sort of handles this for us though with how the `fetch` method works
-- The id column type should maybe be a uuid or string to prevent id increment attacks
+- The id column type should maybe be a uuid or random string to prevent id increment attacks
 - The specialties column could maybe be a different type to allow easier querying
 - Improve form validation and logic by using something like react-hook-form
 - Add unit tests and integration tests
