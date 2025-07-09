@@ -14,7 +14,7 @@ export async function GET() {
     // matches what we are expecting. Could use
     // something like Zod to handle this
 
-    return Response.json({ data })
+    return Response.json(data)
   }
   catch (error: unknown) {
 

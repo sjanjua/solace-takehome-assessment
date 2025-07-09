@@ -1,5 +1,8 @@
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from '@/components/ui/breadcrumb'
+import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from '@/components/ui/table'
 import { AdvocatesSchema } from '@/types'
+import Breadcrumbs from './_components/Breadcrumbs'
+import AdvocatesTable from './_components/AdvocatesTable'
 
 const AdvocatesPage = async () => {
 
@@ -10,27 +13,22 @@ const AdvocatesPage = async () => {
   // the data. In production code we should handle 
   // this error appropriately and inform the user
 
-  console.log(advocatesData)
-
   return (
     <main className='p-4 pl-8 pr-8 flex flex-col gap-16'>
-      {breadcrumbs}
+      <Breadcrumbs />
       <h1 className='text-xl'>Find an Advocate</h1>
+
+      {
+        !advocatesData
+          ? <div className='w-full text-center'>
+            We encountered a problem while trying to get your data. Please try again later.
+          </div>
+          : <AdvocatesTable advocates={advocatesData} />
+      }
+
     </main>
   )
 }
-
-const breadcrumbs = <Breadcrumb>
-  <BreadcrumbList>
-    <BreadcrumbItem>
-      <BreadcrumbLink href="/">Home</BreadcrumbLink>
-    </BreadcrumbItem>
-    <BreadcrumbSeparator />
-    <BreadcrumbItem>
-      <BreadcrumbPage>Solace Advocates</BreadcrumbPage>
-    </BreadcrumbItem>
-  </BreadcrumbList>
-</Breadcrumb>
 
 // Might be better to create a dedicated
 // http client to handle api calls. For example,
